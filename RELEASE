@@ -1,0 +1,2 @@
+Spark 1.6.1 built for Hadoop 2.5.0
+Build flags: -Pyarn -Phadoop-2.4 -Dhadoop.version=2.5.0 -Phive -Phive-thriftserver
