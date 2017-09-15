@@ -21,7 +21,8 @@ object NewsTrain {
 
 
     val hashtf=new HashingTF()
-    val tf=hashtf.transform(newsrdd)
+    val tf=hashtf.Transformation(newsrdd)
+    // .transform(newsrdd)
 
     //第一遍计算IDF的向量，第二标通过IDF计算TF-IDF
     //minDocFreq这个参数的意义是过滤多少个单词

@@ -1,9 +1,12 @@
 package src.main.yxd_ml.SparkSQLMLlib
 
+import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.mllib.classification.{NaiveBayesModel, NaiveBayes}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.sql.SparkSession
+import src.main.yxd_ml.SparkSQLMLlib.LogPage
 
 
 /**
@@ -33,17 +36,16 @@ case class LogPage(
                   )
 object SparkSQLETL {
 
-  val ss=SparkSession.builder()
-    .master("local")
-    .appName("sqlTest")
-    .getOrCreate()
+  val conf= new SparkConf()
+    .setMaster("local")
+    .setAppName("sqlTest")
 
-  val sc=ss.sparkContext
-
+  val sc=new SparkContext(conf)
+  val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+  import sqlContext.implicits._
   //读取文件   需要训练2017年5月份的数据
-  val log=sc.textFile("http://168.192.148.3/log/2017-5")
-  //对每一条数据进行过滤(map的作用)
-  val loglist =log.map { log =>
+  val logPage = sc.textFile("http://168.192.148.3/log/2017-5").
+    map ( log =>
     //每一条log如果长度不小于8，就是合法的
     if(log.split(" ").length>=8){
       val sessionid = log.split(" ")(0)
@@ -55,20 +57,15 @@ object SparkSQLETL {
       val timespent= log.split(" ")(6)
       val rating= log.split(" ")(7)
       LogPage(sessionid,userid,timestamp,pageurl,visittime,referrer,timespent,rating)
+    }else{
+        null
     }
-    //这里小于7的数据可能报空指针
-//    else{
-//      null
-//    }
-  }//.filter(x=>x==null)
-
-  //把loglist的对象传给createDataFrame
-  val schema=ss.createDataFrame(loglist)
+  ).toDF()
   //创建一个中间表pages
-  schema.createOrReplaceTempView("pages")
+  logPage.registerTempTable("pages")
 
   //通过sql语句来判断找出评分大于1
-  val sqlfiter=ss.sql("select * from pages where rating >1 ")
+  val sqlfiter=sqlContext.sql("select * from pages where rating >1 ")
 
   val logrdd=sqlfiter.rdd.map{row=>
     val sessionid = row.getAs[String]("sessionid")
