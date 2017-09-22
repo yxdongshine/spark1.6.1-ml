@@ -90,7 +90,7 @@ object SparkSQLETL {
     val page=data.map(_._3)
     //每个session的页面统计
     val total=page.size
-    data.head
+
     val endtime=data.last._4+data.last._2
     //每个session的时长统计
 
