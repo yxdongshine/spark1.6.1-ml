@@ -1,12 +1,9 @@
 package src.main.yxd_ml.SparkSQLMLlib
 
-import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
 import org.apache.spark.mllib.classification.{NaiveBayesModel, NaiveBayes}
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
-import org.apache.spark.sql.SparkSession
-import src.main.yxd_ml.SparkSQLMLlib.LogPage
 
 
 /**
