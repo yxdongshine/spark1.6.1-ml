@@ -8,6 +8,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
   * Created by 11725 on 2017/6/4.
+ *
+ * 没什么用 迁移另一个项目吧
   */
 object SparknewsKeans {
 
